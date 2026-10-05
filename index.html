@@ -3,77 +3,794 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TukGo — Prototype</title>
+  <title>TukGo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root{--ink:#17252b;--muted:#71807a;--green:#0b8f68;--green2:#e8f7f0;--line:#e2ebe6;--bg:#f7f9f7;--card:#fff;--orange:#b07116;--orangeBg:#fff4de;--red:#d76752;--shadow:0 16px 45px rgba(21,58,44,.08)}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}.app{min-height:100vh}.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:5}.logo{font-weight:900;font-size:25px;letter-spacing:-1px}.logo span{color:var(--green)}.live{display:flex;gap:8px;align-items:center;color:#087252;background:var(--green2);font-size:12px;font-weight:800;padding:8px 12px;border-radius:20px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}.layout{max-width:1220px;margin:auto;padding:28px 20px 60px}.shell{display:grid;grid-template-columns:240px 1fr;gap:25px;direction:ltr}.sidebar,.main{direction:rtl}.sidebar{background:#18342b;color:#fff;border-radius:24px;padding:22px;height:max-content;position:sticky;top:95px}.side-brand{font-size:23px;font-weight:900;margin-bottom:28px}.side-brand span{color:#62d2ad}.nav{display:grid;gap:8px}.nav button{background:transparent;color:#d0e5dc;text-align:right;padding:12px;border-radius:12px}.nav button.active,.nav button:hover{background:rgba(255,255,255,.12);color:#fff}.sidebar-note{font-size:11px;line-height:1.8;color:#a8c8bb;border-top:1px solid rgba(255,255,255,.15);margin-top:28px;padding-top:18px}.hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px}.eyebrow{color:var(--green);font-size:12px;font-weight:900;margin-bottom:5px}.h1{font-size:32px;margin:0;font-weight:900}.sub{color:var(--muted);font-size:13px;line-height:1.8;margin:7px 0 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 3px 18px rgba(21,58,44,.025)}.stat-num{font-size:25px;font-weight:900;color:var(--green)}.stat-label{font-size:11px;color:var(--muted);margin-top:5px}.section{margin-top:24px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section-title{font-size:19px;margin:0;font-weight:900}.section-tag{font-size:11px;background:var(--orangeBg);color:var(--orange);padding:6px 10px;border-radius:20px;font-weight:800}.map{height:330px;border-radius:20px;background:#dcece4;position:relative;overflow:hidden;border:1px solid #cde0d6;background-image:linear-gradient(#b1d1c2 1px,transparent 1px),linear-gradient(90deg,#b1d1c2 1px,transparent 1px);background-size:56px 56px}.road{position:absolute;height:10px;background:#fff;border-radius:10px;transform:rotate(24deg);opacity:.9}.road.a{width:520px;top:90px;right:-70px}.road.b{width:460px;top:225px;right:120px;transform:rotate(-28deg)}.road.c{width:370px;top:165px;right:225px;transform:rotate(90deg)}.pin{position:absolute;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;border:3px solid #fff;font-weight:900;box-shadow:0 5px 12px #457d67}.pin.a{background:var(--green);top:90px;right:180px}.pin.b{background:#f06b4f;bottom:85px;left:160px}.map-label{position:absolute;top:15px;right:17px;color:#557267;font-size:12px;font-weight:800}.route-form{background:#fff;border-radius:15px;padding:8px 12px;position:absolute;bottom:12px;left:12px;right:12px;box-shadow:0 8px 25px rgba(26,67,52,.12)}.field-row{display:flex;gap:10px;align-items:center;padding:8px 0}.field-row+.field-row{border-top:1px solid #edf2ef}.circle{width:9px;height:9px;border-radius:50%;flex:none}.field-row input{border:0;outline:0;width:100%;color:var(--ink);background:transparent;font-size:13px}.input,.select{border:1px solid var(--line);border-radius:11px;padding:11px 12px;width:100%;outline:none;background:#fbfdfc;color:var(--ink)}.input:focus{border-color:var(--green)}.btn{padding:12px 16px;border-radius:11px;font-size:12px;font-weight:900;transition:.16s}.btn:active{transform:scale(.97)}.btn.primary{background:var(--green);color:#fff}.btn.secondary{background:#eff7f3;color:#087252}.btn.outline{border:1px solid var(--line);background:#fff;color:#60736b}.btn.warn{background:var(--orangeBg);color:var(--orange)}.btn.danger{background:#fff0ed;color:var(--red)}.btn.full{width:100%}.actions{display:flex;gap:8px;align-items:center}.offer{display:flex;align-items:center;gap:12px}.offers{display:grid;gap:10px}.avatar{width:44px;height:44px;border-radius:14px;background:#ddf2e9;color:var(--green);display:grid;place-items:center;font-size:18px;font-weight:900;flex:none}.offer-main{flex:1}.offer-name{font-weight:900;font-size:13px}.meta{color:var(--muted);font-size:10px;margin-top:5px}.price{font-size:18px;font-weight:900}.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.plan{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;position:relative}.plan.pop{border:2px solid var(--green)}.plan-badge{position:absolute;top:-10px;right:13px;background:var(--green);color:#fff;font-size:10px;border-radius:20px;padding:5px 9px}.plan h3{margin:0;font-size:15px}.plan .amount{font-size:22px;font-weight:900;color:var(--green);margin:12px 0 6px}.plan small{color:var(--muted);font-size:10px}.plan button{margin-top:16px;width:100%}.notice{background:var(--orangeBg);border:1px solid #f2d79e;border-radius:14px;padding:12px;color:#855818;font-size:12px;line-height:1.8}.progress{height:8px;background:#edf2ef;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green);width:76%}.docs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.doc{border:1px dashed #b8d3c5;border-radius:13px;padding:13px;background:#fbfefc}.doc label{display:block;color:#38574b;font-weight:800;font-size:12px;margin-bottom:8px}.doc input{font-size:11px;width:100%}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.review{display:grid;gap:12px}.review-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #edf2ef;padding-bottom:11px}.review-row:last-child{border:0;padding-bottom:0}.badge{font-size:10px;font-weight:900;padding:6px 9px;border-radius:20px;background:#e8f7f0;color:#087252}.badge.orange{background:var(--orangeBg);color:var(--orange)}.badge.red{background:#fff0ed;color:var(--red)}.locked{border:2px solid #f1c25f;background:#fffaf0;text-align:center;padding:22px;border-radius:18px}.stars{display:flex;gap:5px;justify-content:center;direction:ltr;margin:15px 0}.star{font-size:29px;color:#d4dfd9;background:transparent}.star.on{color:#f1ad31}.tags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin:10px 0 16px}.tag{border:1px solid #dbe8e1;color:#5c756a;background:#fff;border-radius:20px;padding:8px 11px;font-size:11px}.tag.selected{background:var(--green2);border-color:#8ed0b5;color:#087252}.toast{position:fixed;bottom:22px;left:22px;background:#17362b;color:#fff;padding:13px 16px;border-radius:12px;font-size:12px;box-shadow:var(--shadow);z-index:10}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 10% 10%,#dff5eb 0,transparent 34%),var(--bg)}.login-card{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;padding:28px;box-shadow:var(--shadow);text-align:center}.login-logo{width:68px;height:68px;background:var(--green);color:#fff;border-radius:22px;display:grid;place-items:center;margin:0 auto 14px;font-size:22px;font-weight:900;transform:rotate(-7deg)}.login-card h1{margin:0;font-size:30px}.login-card h1 span{color:var(--green)}.role-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 14px}.role{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.role.active{border-color:var(--green);background:var(--green2)}.role strong{display:block}.role small{color:var(--muted);font-size:10px}.divider{display:flex;gap:10px;align-items:center;color:#9aaaA2;font-size:11px;margin:14px 0}.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}.muted-note{font-size:10px;color:var(--muted);line-height:1.7;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(10,30,23,.45);display:grid;place-items:center;padding:18px;z-index:8}.modal-card{background:#fff;border-radius:20px;padding:20px;width:min(440px,100%)}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{background:#f3f6f4;border-radius:50%;width:30px;height:30px}.footer-note{font-size:10px;color:#9aa9a1;text-align:center;margin-top:25px}
-    @media(max-width:850px){.shell{grid-template-columns:1fr}.sidebar{position:static}.nav{grid-template-columns:repeat(4,1fr)}.sidebar-note{display:none}.grid,.plan-grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}.h1{font-size:25px}.sidebar{padding:15px;border-radius:18px}.side-brand{margin-bottom:14px}.nav button{font-size:11px;padding:9px}.docs{grid-template-columns:1fr}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+    button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+    .topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:999}
+    .logo{font-weight:900;font-size:25px;letter-spacing:-1px}.logo span{color:var(--green)}
+    .live{display:flex;gap:8px;align-items:center;color:#087252;background:var(--green2);font-size:12px;font-weight:800;padding:8px 12px;border-radius:20px}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .layout{max-width:1220px;margin:auto;padding:28px 20px 60px}
+    .shell{display:grid;grid-template-columns:240px 1fr;gap:25px;direction:ltr}
+    .sidebar,.main{direction:rtl}
+    .sidebar{background:#18342b;color:#fff;border-radius:24px;padding:22px;height:max-content;position:sticky;top:95px}
+    .side-brand{font-size:23px;font-weight:900;margin-bottom:28px}.side-brand span{color:#62d2ad}
+    .nav{display:grid;gap:8px}.nav button{background:transparent;color:#d0e5dc;text-align:right;padding:12px;border-radius:12px}
+    .nav button.active,.nav button:hover{background:rgba(255,255,255,.12);color:#fff}
+    .sidebar-note{font-size:11px;line-height:1.8;color:#a8c8bb;border-top:1px solid rgba(255,255,255,.15);margin-top:28px;padding-top:18px}
+    .hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+    .eyebrow{color:var(--green);font-size:12px;font-weight:900;margin-bottom:5px}
+    .h1{font-size:32px;margin:0;font-weight:900}.sub{color:var(--muted);font-size:13px;line-height:1.8;margin:7px 0 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 3px 18px rgba(21,58,44,.025)}
+    .stat-num{font-size:25px;font-weight:900;color:var(--green)}.stat-label{font-size:11px;color:var(--muted);margin-top:5px}
+    .section{margin-top:24px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+    .section-title{font-size:19px;margin:0;font-weight:900}
+    .section-tag{font-size:11px;background:var(--orangeBg);color:var(--orange);padding:6px 10px;border-radius:20px;font-weight:800}
+    .input,.select{border:1px solid var(--line);border-radius:11px;padding:11px 12px;width:100%;outline:none;background:#fbfdfc;color:var(--ink)}
+    .input:focus{border-color:var(--green)}
+    .btn{padding:12px 16px;border-radius:11px;font-size:12px;font-weight:900;transition:.16s}
+    .btn:active{transform:scale(.97)}.btn.primary{background:var(--green);color:#fff}
+    .btn.secondary{background:#eff7f3;color:#087252}.btn.outline{border:1px solid var(--line);background:#fff;color:#60736b}
+    .btn.warn{background:var(--orangeBg);color:var(--orange)}.btn.danger{background:#fff0ed;color:var(--red)}
+    .btn.full{width:100%}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .offer{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.offers{display:grid;gap:10px}
+    .avatar{width:44px;height:44px;border-radius:14px;background:#ddf2e9;color:var(--green);display:grid;place-items:center;font-size:18px;font-weight:900;flex:none}
+    .offer-main{flex:1;min-width:150px}.offer-name{font-weight:900;font-size:13px}
+    .meta{color:var(--muted);font-size:10px;margin-top:5px}.price{font-size:18px;font-weight:900}
+    .notice{background:var(--orangeBg);border:1px solid #f2d79e;border-radius:14px;padding:12px;color:#855818;font-size:12px;line-height:1.8}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .badge{font-size:10px;font-weight:900;padding:6px 9px;border-radius:20px;background:#e8f7f0;color:#087252;display:inline-block}
+    .badge.orange{background:var(--orangeBg);color:var(--orange)}.badge.red{background:#fff0ed;color:var(--red)}
+    .toast{position:fixed;bottom:22px;left:22px;background:#17362b;color:#fff;padding:13px 16px;border-radius:12px;font-size:12px;box-shadow:var(--shadow);z-index:9999;max-width:90%}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 10% 10%,#dff5eb 0,transparent 34%),var(--bg)}
+    .login-card{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;padding:28px;box-shadow:var(--shadow);text-align:center}
+    .login-logo{width:68px;height:68px;background:var(--green);color:#fff;border-radius:22px;display:grid;place-items:center;margin:0 auto 14px;font-size:22px;font-weight:900;transform:rotate(-7deg)}
+    .login-card h1{margin:0;font-size:30px}.login-card h1 span{color:var(--green)}
+    .role-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 14px}
+    .role{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+    .role.active{border-color:var(--green);background:var(--green2)}
+    .role strong{display:block}.role small{color:var(--muted);font-size:10px}
+    .muted-note{font-size:10px;color:var(--muted);line-height:1.7;margin-top:12px}
+    .footer-note{font-size:10px;color:#9aa9a1;text-align:center;margin-top:25px}
+    #map{height:420px;border-radius:20px;overflow:hidden;border:1px solid #cde0d6;background:#dcece4}
+    .map-sm{height:280px!important}
+    .switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+    .switch input{display:none}
+    .switch .track{width:50px;height:28px;background:#cfe0d8;border-radius:20px;position:relative;transition:.2s}
+    .switch .track::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+    .switch input:checked + .track{background:var(--green)}
+    .switch input:checked + .track::after{left:25px}
+    .loc-chip{display:inline-flex;align-items:center;gap:6px;background:#f1f8f4;border:1px solid #d7e8df;color:#2a5244;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:700}
+    @media(max-width:850px){.shell{grid-template-columns:1fr}.sidebar{position:static}.nav{grid-template-columns:repeat(3,1fr)}.sidebar-note{display:none}.grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}.h1{font-size:25px}.sidebar{padding:15px;border-radius:18px}.side-brand{margin-bottom:14px}.nav button{font-size:11px;padding:9px}}
   </style>
 </head>
 <body>
   <div id="app"></div>
   <div id="toast" class="toast hidden"></div>
-  <div id="modal" class="modal hidden"></div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import { getDatabase, ref, set, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getDatabase, ref, set, push, update, remove, onValue, onChildAdded, onChildChanged, off, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
     const firebaseConfig = { apiKey:"AIzaSyBqWgXZHVd4BXJIJ6FyOlA5DUOEMqsLruY", authDomain:"tukgo-c906b.firebaseapp.com", databaseURL:"https://tukgo-c906b-default-rtdb.europe-west1.firebasedatabase.app", projectId:"tukgo-c906b", storageBucket:"tukgo-c906b.firebasestorage.app", messagingSenderId:"789724866023", appId:"1:789724866023:web:a58bc13a0353ab19ac0942", measurementId:"G-YN6TCMFXC5" };
-    const firebaseApp = initializeApp(firebaseConfig); const auth = getAuth(firebaseApp); const db = getDatabase(firebaseApp);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    // ---------- STATE ----------
     let session = JSON.parse(localStorage.getItem('tukgo-session') || 'null');
-    let phoneConfirmation = null;
-    let currentView = 'overview'; let selectedRole = 'rider'; let selectedPlan = 'monthly'; let chosenStars = 0; const chosenTags = new Set();
-    const offers = [{name:'محمد السيد',rating:'4.9',price:35,eta:'3 دقائق',meta:'0.8 كم · 128 رحلة'},{name:'أحمد رجب',rating:'4.8',price:40,eta:'5 دقائق',meta:'1.2 كم · 96 رحلة'},{name:'كريم حسن',rating:'4.7',price:30,eta:'6 دقائق',meta:'1.6 كم · 74 رحلة'}];
-    const plans = [{id:'weekly',title:'أسبوعي',amount:'40 جنيه',sub:'أول اشتراك فقط',after:'بعده 50 جنيه'},{id:'monthly',title:'شهري',amount:'200 جنيه',sub:'تشغيل كامل لمدة شهر',after:'تجديد يدوي'},{id:'yearly',title:'سنوي ترويجي',amount:'2,000 جنيه',sub:'توفير ضخم لتشجيع السائقين',after:'تجديد يدوي'}];
-    const $ = (q)=>document.querySelector(q); const esc = (x)=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-    function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),2600)}
-    async function writeProfile(name,role,provider='anonymous'){try{let cred=auth.currentUser;if(!cred) cred=(await signInAnonymously(auth)).user;await set(ref(db,'users/'+cred.uid),{uid:cred.uid,name,accountType:role,status:role==='driver'?'pending_documents':'active',provider,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});return cred}catch(e){toast('Firebase: فعّل Anonymous أو راجع قواعد قاعدة البيانات');throw e}}
-    function loginScreen(){return `<div class="login-wrap"><div class="login-card"><div class="login-logo">TG</div><h1>Tuk<span>Go</span></h1><p class="sub">مشوارك أسرع وأسهل بالتوك توك</p><div class="role-choice"><button class="role ${selectedRole==='rider'?'active':''}" data-role="rider"><strong>راكب</strong><small>أطلب مشوار</small></button><button class="role ${selectedRole==='driver'?'active':''}" data-role="driver"><strong>سائق</strong><small>استقبل رحلات</small></button></div><input id="guestName" class="input" placeholder="اسمك بالكامل"/><button id="guestBtn" class="btn primary full" style="margin-top:10px">دخول كزائر</button><div class="divider">أو</div><button id="googleBtn" class="btn outline full">المتابعة باستخدام Google</button><button id="phoneBtn" class="btn secondary full" style="margin-top:8px">الدخول برقم الهاتف OTP</button><p class="muted-note">سيتم حفظ نوع الحساب مرة واحدة. بعد التسجيل ستظهر خدمات الحساب فقط.</p></div></div>`}
-    function nav(){return `<aside class="sidebar"><div class="side-brand">Tuk<span>Go</span></div><div class="nav">${(session?.accountType==='driver'?[['overview','الرئيسية'],['bidding','الطلبات'],['subscriptions','الاشتراك'],['onboarding','ملفي']]:session?.accountType==='admin'?[['overview','الرئيسية'],['subscriptions','الباقات'],['onboarding','مراجعة السائقين'],['bidding','الرحلات']]:[['overview','اطلب رحلة'],['bidding','العروض'],['rating','تقييماتي']]).map(([id,label])=>`<button class="${currentView===id?'active':''}" data-view="${id}">${label}</button>`).join('')}</div><div class="sidebar-note">الدفع بين الراكب والسائق نقدًا. لا توجد عمولة على الرحلة.<br/><br/>Firebase: <b>tukgo-c906b</b></div></aside>`}
-    function header(title,sub){return `<div class="hero"><div><div class="eyebrow">${session?.accountType==='driver'?'مساحة السائق':session?.accountType==='admin'?'لوحة الإدارة':'تطبيق العملاء'}</div><h1 class="h1">${title}</h1><p class="sub">${sub}</p></div><div class="live"><i class="dot"></i>${esc(session?.name||'زائر')} · متصل</div></div>`}
-    function overview(){if(session.accountType==='driver')return driverOverview();if(session.accountType==='admin')return adminOverview();return `<section>${header('اطلب مشوارك','حدد البداية والنهاية، واقترح سعر كاش مناسبًا للسائقين القريبين.') }<div class="card"><div class="map"><div class="map-label">أبو سلطان / فايد · خريطة الطلب</div><div class="road a"></div><div class="road b"></div><div class="road c"></div><div class="pin a">A</div><div class="pin b">B</div><div class="route-form"><div class="field-row"><span class="circle" style="background:#0b8f68"></span><input id="from" placeholder="نقطة البداية" value="ميدان أبو سلطان"/></div><div class="field-row"><span class="circle" style="background:#f06b4f"></span><input id="to" placeholder="نقطة النهاية" value="شارع فايد الرئيسي"/></div></div></div><div class="two" style="margin-top:14px"><div><label class="eyebrow">السعر المقترح كاش</label><input id="bidPrice" class="input" type="number" value="35"/></div><div><label class="eyebrow">ملاحظة للسايق</label><input class="input" placeholder="مثال: شنطة صغيرة"/></div></div><button class="btn primary full" style="margin-top:13px" id="publishRide">بث الطلب للسواقين القريبين</button></div></section><section class="section"><div class="section-head"><h2 class="section-title">طريقة العمل</h2><span class="section-tag">مزايدة كاش</span></div><div class="grid"><div class="card"><b>01 · اقترح</b><p class="sub">اكتب السعر المبدئي للرحلة.</p></div><div class="card"><b>02 · تفاوض</b><p class="sub">السائق يقبل أو يرسل عرضًا مضادًا.</p></div><div class="card"><b>03 · اختار</b><p class="sub">وافق على السعر ثم افتح التتبع.</p></div></div></section>`}
-    function bidding(){return `<section>${header('عروض السائقين','راجع السعر الكاش والتقييم والوقت، ثم وافق أو ارفض أو اطلب تفاوضًا.') }<div class="notice">طلبك الحالي: <b>ميدان أبو سلطان ← شارع فايد الرئيسي</b> · السعر المقترح <b>35 جنيه كاش</b></div><div class="offers section">${offers.map((o,i)=>`<div class="card offer"><div class="avatar">${o.name[0]}</div><div class="offer-main"><div class="offer-name">${o.name} <span class="badge">★ ${o.rating}</span></div><div class="meta">${o.meta} · يصل خلال ${o.eta}</div></div><div class="price">${o.price} ج</div><div class="actions"><button class="btn outline" data-action="reject">رفض</button><button class="btn warn" data-action="negotiate">تفاوض</button><button class="btn primary" data-action="accept">موافقة</button></div></div>`).join('')}</div><div class="card section"><div class="section-head"><h2 class="section-title">قواعد المزايدة</h2><span class="badge">كاش فقط</span></div><p class="sub">إذا رفض الراكب العرض، يستطيع السائق تعديل السعر وإرسال عرض جديد. عند الموافقة يتم قفل الرحلة وفتح خريطة التتبع الحية.</p></div></section>`}
-    function subscriptions(){return `<section>${header('باقات السائقين','الدفع خارج التطبيق عبر Vodafone Cash، والتفعيل يتم يدويًا من الإدارة.') }<div class="notice">التجديد الآمن: لا توجد بوابة دفع داخلية. يحوّل السائق خارج التطبيق، ثم تفتح الإدارة الحساب لمدة الباقة بضغطة زر.</div><div class="plan-grid section">${plans.map(p=>`<div class="plan ${p.id==='monthly'?'pop':''}">${p.id==='monthly'?'<span class="plan-badge">الأكثر اختيارًا</span>':''}<h3>${p.title}</h3><div class="amount">${p.amount}</div><small>${p.sub}<br/>${p.after}</small><button class="btn ${selectedPlan===p.id?'primary':'secondary'}" data-plan="${p.id}">${selectedPlan===p.id?'مختارة':'اختيار الباقة'}</button></div>`).join('')}</div><div class="two section"><div class="card"><h2 class="section-title">إثبات التحويل</h2><p class="sub">ارفع صورة الإيصال ورقم العملية، ثم أرسل الطلب للمراجعة.</p><input class="input" type="file" accept="image/*" style="margin:12px 0"/><input class="input" placeholder="رقم العملية (اختياري)"/><button class="btn primary full" style="margin-top:12px" id="submitSub">إرسال للإدارة</button></div><div class="card"><h2 class="section-title">تنبيه التجديد</h2><p class="sub">سيتم إرسال تذكير للسائق قبل انتهاء الباقة بـ <b>48 ساعة</b>.</p><div class="progress"><i></i></div><p class="meta">متبقي 5 أيام · تذكير مجدول</p></div></div></section>`}
-    function onboarding(){return `<section>${header('تسجيل السائق','لن يتم تفعيل الحساب أو استقبال الرحلات قبل مراجعة الإدارة.') }<div class="card"><div class="two"><div><label class="eyebrow">الاسم بالكامل</label><input class="input" placeholder="اسم السائق"/></div><div><label class="eyebrow">تاريخ الميلاد</label><input id="birthDate" class="input" type="date"/><small class="meta">يشترط ألا يقل العمر عن 18 سنة.</small></div></div><div class="docs section">${['بطاقة الرقم القومي','الفيش والتشبيه الجنائي','عقد ملكية أو مبايعة التوك توك','الصورة الشخصية'].map(x=>`<div class="doc"><label>${x}</label><input type="file" accept="image/*,.pdf"/></div>`).join('')}</div><label style="display:flex;gap:8px;align-items:center;margin-top:16px;font-size:12px"><input id="terms" type="checkbox"/> أوافق على شروط TukGo: الاحترام والقيادة الآمنة، وأفهم أن الحظر النهائي بسبب إساءة أو شكوى أمان خطيرة يجمّد الحساب ولا يحق معه استرداد الاشتراك المدفوع مقدمًا.</label><button class="btn primary full" style="margin-top:15px" id="submitOnboarding">إرسال للمراجعة</button></div></section>`}
-    function rating(){return `<section>${header('إنهاء الرحلة والتقييم','بعد إنهاء السائق للرحلة، تبقى شاشة الراكب مقفولة حتى إرسال التقييم.') }<div class="locked"><span class="badge orange">تقييم إلزامي</span><h2 class="section-title" style="margin-top:12px">كيف كانت رحلتك مع السائق؟</h2><p class="sub">الرحلة: ميدان أبو سلطان ← شارع فايد الرئيسي · المبلغ المتفق عليه: 35 جنيه كاش</p><div class="stars">${[1,2,3,4,5].map(i=>`<button class="star ${chosenStars>=i?'on':''}" data-star="${i}">★</button>`).join('')}</div><div class="tags">${['سواق محترم','قيادة آمنة','وصل في المعاد','استغلال','قيادة خطرة'].map(t=>`<button class="tag ${chosenTags.has(t)?'selected':''}" data-tag="${t}">${t}</button>`).join('')}</div><button class="btn primary" id="sendRating">إرسال التقييم وفتح التطبيق</button></div><div class="card section"><h2 class="section-title">تأكيد التحصيل للسائق</h2><p class="sub">عند الضغط على إنهاء الرحلة، يؤكد السائق تحصيل المبلغ الكاش المتفق عليه.</p><button class="btn secondary" id="finishRide">إنهاء الرحلة وتأكيد التحصيل</button></div></section>`}
-    function adminOverview(){return `<section>${header('لوحة الإدارة','إدارة الحسابات والاشتراكات والرحلات بأمان.') }<div class="grid"><div class="card"><div class="stat-num">12</div><div class="stat-label">سائق نشط</div></div><div class="card"><div class="stat-num">04</div><div class="stat-label">طلبات اشتراك معلقة</div></div><div class="card"><div class="stat-num">86</div><div class="stat-label">رحلة اليوم</div></div></div><div class="two section"><div class="card review"><div class="section-head"><h2 class="section-title">تفعيل يدوي</h2><span class="badge orange">مراجعة</span></div><div class="review-row"><span>محمود عبدالسلام · شهري</span><button class="btn primary" data-approve>تفعيل شهر</button></div><div class="review-row"><span>حسن علي · أسبوعي</span><button class="btn primary" data-approve>تفعيل أسبوع</button></div></div><div class="card"><h2 class="section-title">التذكيرات</h2><p class="sub">سيتم إشعار السائقين قبل انتهاء الباقة بـ48 ساعة.</p><span class="badge">الإشعارات مفعّلة</span></div></div></section>`}
-    function driverOverview(){return `<section>${header('أهلاً يا سائق','استقبل عروض الرحلات بعد اعتماد أوراقك وتفعيل اشتراكك.') }<div class="grid"><div class="card"><div class="stat-num">معلّق</div><div class="stat-label">حالة الحساب</div></div><div class="card"><div class="stat-num">0</div><div class="stat-label">رحلات اليوم</div></div><div class="card"><div class="stat-num">—</div><div class="stat-label">الباقة الحالية</div></div></div><div class="card section"><h2 class="section-title">أكمل التسجيل</h2><p class="sub">ارفع المستندات، وافق على الشروط، ثم أرسل طلبك للإدارة. لن تستقبل طلبات قبل الاعتماد.</p><button class="btn primary" data-view="onboarding">ابدأ تسجيل السائق</button></div></section>`}
-    function render(){if(!session){$('#app').innerHTML=loginScreen();bindLogin();return}$('#app').innerHTML=`<div class="topbar"><div class="logo">Tuk<span>Go</span></div><div class="live"><i class="dot"></i>${esc(session.name)} · ${session.accountType==='driver'?'سائق':session.accountType==='admin'?'إدارة':'راكب'}</div></div><main class="layout"><div class="shell">${nav()}<div class="main">${currentView==='overview'?overview():currentView==='bidding'?bidding():currentView==='subscriptions'?subscriptions():currentView==='onboarding'?onboarding():rating()}<div class="footer-note">Prototype تفاعلي · البيانات الحقيقية تحتاج قواعد Firebase وStorage وCloud Functions</div></div></div></main></div>`;bindApp()}
-    function bindLogin(){$$('.role').forEach(b=>b.onclick=()=>{selectedRole=b.dataset.role;render()});$('#guestBtn').onclick=async()=>{const name=$('#guestName').value.trim();if(!name)return toast('اكتب اسمك أولًا');try{await writeProfile(name,selectedRole);session={name,accountType:selectedRole};localStorage.setItem('tukgo-session',JSON.stringify(session));render()}catch{}};$('#googleBtn').onclick=async()=>{try{const result=await signInWithPopup(auth,new GoogleAuthProvider());const name=result.user.displayName||result.user.email||'مستخدم Google';await writeProfile(name,selectedRole,'google');session={name,accountType:selectedRole};localStorage.setItem('tukgo-session',JSON.stringify(session));render()}catch(e){toast('فعّل Google Sign-in من Firebase ثم جرّب') }};$('#phoneBtn').onclick=()=>openPhoneModal()}
-    function $$(q){return [...document.querySelectorAll(q)]}
-    function bindApp(){$$('.nav button,[data-view]').forEach(b=>b.onclick=()=>{currentView=b.dataset.view;render()});$$('[data-action]').forEach(b=>b.onclick=()=>toast(b.dataset.action==='accept'?'تم قفل الرحلة وفتح التتبع الحي':b.dataset.action==='negotiate'?'أرسلنا عرض تفاوض للسائق':'تم رفض العرض، ويمكن للسائق إرسال عرض جديد'));$$('[data-plan]').forEach(b=>b.onclick=()=>{selectedPlan=b.dataset.plan;render()});$('#publishRide')?.addEventListener('click',async()=>{try{const ride=push(ref(db,'rides'));await set(ride,{riderId:auth.currentUser?.uid||'guest',from:$('#from').value,to:$('#to').value,suggestedPrice:Number($('#bidPrice').value),payment:'cash',area:'Abu Sultan/Fayed',status:'open',createdAt:serverTimestamp()});toast('تم بث الطلب للسائقين القريبين')}catch{toast('تعذر حفظ الرحلة؛ راجع قواعد Firebase')}});$('#submitSub')?.addEventListener('click',()=>toast('تم إرسال طلب الاشتراك للمراجعة اليدوية'));$('#submitOnboarding')?.addEventListener('click',()=>{const dob=$('#birthDate').value;if(!dob||!$('#terms').checked)return toast('أكمل تاريخ الميلاد والموافقة على الشروط');const age=(Date.now()-new Date(dob).getTime())/31557600000;if(age<18)return toast('لا يمكن التسجيل: يجب أن يكون العمر 18 سنة أو أكثر');toast('تم إرسال أوراقك للإدارة')});$$('[data-star]').forEach(b=>b.onclick=()=>{chosenStars=Number(b.dataset.star);render()});$$('[data-tag]').forEach(b=>b.onclick=()=>{chosenTags.has(b.dataset.tag)?chosenTags.delete(b.dataset.tag):chosenTags.add(b.dataset.tag);render()});$('#sendRating')?.addEventListener('click',()=>{if(!chosenStars)return toast('اختار عدد النجوم أولًا');toast('تم تحديث تقييم السائق وفتح التطبيق');currentView='overview';render()});$('#finishRide')?.addEventListener('click',()=>{toast('تم تأكيد تحصيل الكاش وفتح شاشة التقييم');currentView='rating';render()});$$('[data-approve]').forEach(b=>b.onclick=()=>{b.textContent='تم التفعيل';b.disabled=true;b.className='btn secondary';toast('تم تفعيل الحساب يدويًا')})}
-    async function finishAuthUser(user, provider, name) {
-      const finalName = name || user.displayName || user.email || 'مستخدم TukGo';
-      await writeProfile(finalName, selectedRole, provider);
-      session = { name: finalName, accountType: selectedRole };
-      localStorage.setItem('tukgo-session', JSON.stringify(session));
-      $('#modal').classList.add('hidden');
+    let currentView = 'overview';
+    let selectedRole = 'rider';
+    let currentLocation = null;
+    let selectedDestination = null;
+    let mapInstance = null;
+    let myMarker = null;
+    let destMarker = null;
+    let driverMarkers = {};
+    let watchId = null;
+    let lastLocWrite = 0;
+    let activeRideId = null;
+    let activeRide = null;
+    let isOnline = false;
+    let chosenStars = 0;
+    const chosenTags = new Set();
+    const activeListeners = [];
+
+    // ---------- HELPERS ----------
+    const $ = (q) => document.querySelector(q);
+    const $$ = (q) => [...document.querySelectorAll(q)];
+    const esc = (x) => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+    function toast(msg, ms=2600){
+      const el = $('#toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), ms);
+    }
+
+    function addListener(path, type, cb) {
+      const r = ref(db, path);
+      const fn = type === 'value' ? onValue
+                : type === 'child_added' ? onChildAdded
+                : type === 'child_changed' ? onChildChanged
+                : onValue;
+      fn(r, cb);
+      activeListeners.push({ r, type, cb });
+    }
+    function clearListeners() {
+      activeListeners.forEach(l => { try { off(l.r, l.type, l.cb); } catch {} });
+      activeListeners.length = 0;
+    }
+
+    async function reverseGeocode(lat, lng) {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ar`, { headers: { 'Accept':'application/json' } });
+        const data = await res.json();
+        return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      } catch { return `${lat.toFixed(5)}, ${lng.toFixed(5)}`; }
+    }
+
+    function haversineKm(a, b) {
+      const R = 6371, dLat = (b.lat - a.lat) * Math.PI/180, dLng = (b.lng - a.lng) * Math.PI/180;
+      const s = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180) * Math.cos(b.lat*Math.PI/180) * Math.sin(dLng/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
+    // ---------- GPS ----------
+    function startGpsWatch() {
+      if (watchId !== null) return;
+      if (!navigator.geolocation) return toast('المتصفح لا يدعم تحديد الموقع');
+      watchId = navigator.geolocation.watchPosition(
+        (pos) => onLocationUpdate({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy }),
+        (err) => { console.warn('GPS', err); if (err.code === 1) toast('لازم تسمح بالوصول للموقع'); },
+        { enableHighAccuracy: true, maximumAge: 4000, timeout: 20000 }
+      );
+    }
+
+    function onLocationUpdate(loc) {
+      currentLocation = loc;
+      if (myMarker && mapInstance) myMarker.setLatLng([loc.lat, loc.lng]);
+      if (mapInstance && !mapInstance._hasCentered) {
+        mapInstance.setView([loc.lat, loc.lng], 15);
+        mapInstance._hasCentered = true;
+      }
+      if (session?.accountType === 'driver' && isOnline) {
+        const now = Date.now();
+        if (now - lastLocWrite > 5000) {
+          lastLocWrite = now;
+          set(ref(db, `drivers/${session.uid}/location`), {
+            lat: loc.lat, lng: loc.lng, updatedAt: serverTimestamp()
+          }).catch(()=>{});
+        }
+      }
+    }
+
+    // ---------- MAP ----------
+    function initMap(containerId, center, onClick) {
+      const el = document.getElementById(containerId);
+      if (!el) return null;
+      if (mapInstance) { try { mapInstance.remove(); } catch {} mapInstance = null; }
+      myMarker = null; destMarker = null; driverMarkers = {};
+
+      mapInstance = L.map(containerId, { zoomControl: true }).setView([center.lat, center.lng], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19, attribution: '© OpenStreetMap'
+      }).addTo(mapInstance);
+
+      if (currentLocation) {
+        myMarker = L.circleMarker([currentLocation.lat, currentLocation.lng], {
+          radius: 9, color: '#fff', weight: 3, fillColor: '#0b8f68', fillOpacity: 1
+        }).addTo(mapInstance).bindTooltip('أنت هنا');
+        mapInstance._hasCentered = true;
+      } else {
+        mapInstance._hasCentered = false;
+      }
+
+      if (typeof onClick === 'function') {
+        mapInstance.on('click', (e) => onClick(e.latlng));
+      }
+      return mapInstance;
+    }
+
+    function setDestinationMarker(lat, lng) {
+      if (!mapInstance) return;
+      if (destMarker) destMarker.setLatLng([lat, lng]);
+      else destMarker = L.circleMarker([lat, lng], {
+        radius: 9, color: '#fff', weight: 3, fillColor: '#f06b4f', fillOpacity: 1
+      }).addTo(mapInstance).bindTooltip('الوجهة');
+    }
+
+    function renderDriverMarkers(drivers) {
+      if (!mapInstance) return;
+      const seen = new Set();
+      Object.entries(drivers || {}).forEach(([uid, d]) => {
+        if (!d?.location) return;
+        seen.add(uid);
+        const pos = [d.location.lat, d.location.lng];
+        if (driverMarkers[uid]) driverMarkers[uid].setLatLng(pos);
+        else {
+          driverMarkers[uid] = L.marker(pos, {
+            icon: L.divIcon({ className:'', html:`<div style="width:26px;height:26px;background:#0b8f68;border:3px solid #fff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3)"></div>`, iconSize:[26,26], iconAnchor:[13,13] })
+          }).addTo(mapInstance).bindTooltip(d.name || 'سائق');
+        }
+      });
+      Object.keys(driverMarkers).forEach(uid => {
+        if (!seen.has(uid)) { mapInstance.removeLayer(driverMarkers[uid]); delete driverMarkers[uid]; }
+      });
+    }
+
+    // ---------- LOGIN ----------
+    function loginScreen(){
+      return `<div class="login-wrap"><div class="login-card">
+        <div class="login-logo">TG</div>
+        <h1>Tuk<span>Go</span></h1>
+        <p class="sub">مشوارك أسرع وأسهل بالتوك توك</p>
+        <div class="role-choice">
+          <button class="role ${selectedRole==='rider'?'active':''}" data-role="rider"><strong>راكب</strong><small>أطلب مشوار</small></button>
+          <button class="role ${selectedRole==='driver'?'active':''}" data-role="driver"><strong>سائق</strong><small>استقبل رحلات</small></button>
+        </div>
+        <button id="googleBtn" class="btn primary full">المتابعة باستخدام Google</button>
+        <p class="muted-note">لما تدوس، هنطلب منك تسمح بالوصول لموقعك علشان نحدد مكانك على الخريطة.</p>
+      </div></div>`;
+    }
+
+    async function handleGoogleLogin() {
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const name = user.displayName || user.email || 'مستخدم';
+        // check if user exists
+        const snap = await get(ref(db, `users/${user.uid}`));
+        if (snap.exists()) {
+          const data = snap.val();
+          session = { uid: user.uid, name: data.name || name, accountType: data.accountType || selectedRole };
+        } else {
+          await set(ref(db, `users/${user.uid}`), {
+            uid: user.uid, name, accountType: selectedRole,
+            status: selectedRole === 'driver' ? 'pending_documents' : 'active',
+            provider: 'google', createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+          });
+          session = { uid: user.uid, name, accountType: selectedRole };
+        }
+        localStorage.setItem('tukgo-session', JSON.stringify(session));
+        startGpsWatch();
+        render();
+        toast('تم تسجيل الدخول');
+      } catch (e) {
+        console.error(e);
+        if (String(e.code).includes('unauthorized-domain')) toast('النطاق مش مضاف في Firebase Authorized domains');
+        else if (String(e.code).includes('popup-closed')) toast('اتقفلت نافذة تسجيل الدخول');
+        else toast('فشل تسجيل الدخول: ' + (e.code || e.message));
+      }
+    }
+
+    function signOutUser() {
+      if (watchId !== null) { try { navigator.geolocation.clearWatch(watchId); } catch {} watchId = null; }
+      if (session?.uid && session?.accountType === 'driver') {
+        set(ref(db, `drivers/${session.uid}/online`), false).catch(()=>{});
+      }
+      clearListeners();
+      try { signOut(auth); } catch {}
+      localStorage.removeItem('tukgo-session');
+      session = null; activeRideId = null; activeRide = null; isOnline = false;
       render();
     }
-    function openPhoneModal(){
-      $('#modal').classList.remove('hidden');
-      $('#modal').innerHTML=`<div class="modal-card"><div class="modal-head"><h2 class="section-title">تسجيل برقم الهاتف</h2><button class="close" id="closeModal">×</button></div><p class="sub">سيتم إرسال رمز OTP إلى رقمك قبل أول طلب رحلة.</p><input id="phoneName" class="input" placeholder="اسمك بالكامل"/><input id="phone" class="input" style="margin-top:8px" placeholder="+20 10 0000 0000"/><div id="recaptcha-container" style="margin-top:10px"></div><button id="sendOtp" class="btn primary full" style="margin-top:12px">إرسال رمز التحقق</button><div id="otpArea" class="hidden"><input id="otp" class="input" style="margin-top:10px" placeholder="اكتب رمز التحقق" inputmode="numeric"/><button id="confirmOtp" class="btn secondary full" style="margin-top:8px">تأكيد الرمز وإنشاء الحساب</button></div><p class="muted-note">تأكد من كتابة الرقم بصيغة دولية مثل +2010xxxxxxxx.</p></div>`;
-      $('#closeModal').onclick=()=>$('#modal').classList.add('hidden');
-      let verifier;
-      $('#sendOtp').onclick=async()=>{
-        const phone=$('#phone').value.trim();
-        if(!$('#phoneName').value.trim() || !phone) return toast('اكتب الاسم ورقم الهاتف أولًا');
-        try{
-          verifier = new RecaptchaVerifier(auth,'recaptcha-container',{size:'normal'});
-          phoneConfirmation = await signInWithPhoneNumber(auth,phone,verifier);
-          $('#otpArea').classList.remove('hidden');
-          $('#sendOtp').classList.add('hidden');
-          toast('تم إرسال رمز التحقق');
-        }catch(e){ toast('تعذر إرسال OTP؛ راجع الرقم أو إعدادات النطاق في Firebase'); try{await verifier?.clear()}catch{} }
-      };
-      $('#confirmOtp').onclick=async()=>{
-        const code=$('#otp').value.trim();
-        if(!phoneConfirmation || !code) return toast('اكتب رمز التحقق');
-        try{ const result=await phoneConfirmation.confirm(code); await finishAuthUser(result.user,'phone',$('#phoneName').value.trim()); }catch{ toast('رمز التحقق غير صحيح أو انتهت صلاحيته'); }
-      };
+
+    // ---------- HEADER / NAV ----------
+    function nav(){
+      const items = session.accountType === 'driver'
+        ? [['overview','الرئيسية'],['onboarding','ملفي']]
+        : [['overview','اطلب رحلة'],['bidding','عروضي'],['tracking','تتبع']];
+      return `<aside class="sidebar">
+        <div class="side-brand">Tuk<span>Go</span></div>
+        <div class="nav">${items.map(([id,label])=>`<button class="${currentView===id?'active':''}" data-view="${id}">${label}</button>`).join('')}</div>
+        <div style="margin-top:20px"><button class="btn outline full" id="logoutBtn">تسجيل خروج</button></div>
+        <div class="sidebar-note">الدفع نقدًا. لا توجد عمولة.<br/>Firebase: <b>tukgo-c906b</b></div>
+      </aside>`;
     }
+
+    function header(title, sub){
+      return `<div class="hero"><div>
+        <div class="eyebrow">${session.accountType==='driver'?'مساحة السائق':'تطبيق العملاء'}</div>
+        <h1 class="h1">${title}</h1><p class="sub">${sub}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <div class="live"><i class="dot"></i>${esc(session.name)}</div>
+        <div class="loc-chip" id="locChip">${currentLocation ? `📍 ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}` : '📍 جاري تحديد موقعك...'}</div>
+      </div></div>`;
+    }
+
+    // ---------- RIDER VIEWS ----------
+    function riderOverview(){
+      return `<section>
+        ${header('اطلب مشوارك','اضغط على الخريطة علشان تحدد الوجهة، وبعدين اكتب السعر واطلب.')}
+        <div class="card">
+          <div id="map" class="map"></div>
+          <div class="two" style="margin-top:14px">
+            <div>
+              <label class="eyebrow">الوجهة</label>
+              <div class="input" id="destText" style="min-height:42px;display:flex;align-items:center;color:#60736b">اضغط على الخريطة لتحديد الوجهة</div>
+            </div>
+            <div>
+              <label class="eyebrow">السعر المقترح (جنيه كاش)</label>
+              <input id="bidPrice" class="input" type="number" value="35" min="5" />
+            </div>
+          </div>
+          <button class="btn primary full" style="margin-top:13px" id="publishRide">اطلب الرحلة للسواقين القريبين</button>
+        </div>
+        <section class="section">
+          <div class="section-head"><h2 class="section-title">السواقين المتصلين دلوقتي</h2><span class="section-tag">لايف</span></div>
+          <div id="nearbyDrivers" class="offers"><div class="card"><p class="sub">جاري البحث عن سواقين قريبين...</p></div></div>
+        </section>
+      </section>`;
+    }
+
+    function riderBidding(){
+      return `<section>
+        ${header('عروض السواقين','العروض بتوصلك لايف. اقبل العرض اللي يناسبك.')}
+        <div class="notice" id="rideSummary">${activeRide ? `رحلتك: <b>${esc(activeRide.pickupAddress||'موقعك')}</b> ← <b>${esc(activeRide.dropoffAddress||'الوجهة')}</b> · سعرك المقترح <b>${activeRide.suggestedPrice} جنيه</b>` : 'لا توجد رحلة نشطة'}</div>
+        <div class="offers section" id="offersList"><div class="card"><p class="sub">في انتظار عروض السواقين...</p></div></div>
+      </section>`;
+    }
+
+    function riderTracking(){
+      if (!activeRide) return `<section>${header('تتبع الرحلة','لا توجد رحلة نشطة حالياً.')}<div class="card"><p class="sub">اطلب رحلة من الشاشة الرئيسية.</p></div></section>`;
+      return `<section>
+        ${header('تتبع الرحلة','السائق في الطريق إليك. الخريطة بتتحدث لايف.')}
+        <div class="card">
+          <div id="map" class="map"></div>
+          <div class="two" style="margin-top:14px">
+            <div class="card" style="box-shadow:none;border:1px dashed #cde0d6">
+              <div class="eyebrow">السائق</div>
+              <div class="offer-name" id="trackDriverName">${esc(activeRide.driverName||'—')}</div>
+              <div class="meta" id="trackDistance">جاري حساب المسافة...</div>
+            </div>
+            <div class="card" style="box-shadow:none;border:1px dashed #cde0d6">
+              <div class="eyebrow">السعر المتفق عليه</div>
+              <div class="price" style="color:var(--green)">${activeRide.agreedPrice || activeRide.suggestedPrice} ج</div>
+              <div class="meta">كاش عند الوصول</div>
+            </div>
+          </div>
+          <div id="trackStatus" class="notice" style="margin-top:14px">الحالة: ${esc(activeRide.status)}</div>
+        </div>
+      </section>`;
+    }
+
+    // ---------- DRIVER VIEWS ----------
+    function driverOverview(){
+      return `<section>
+        ${header('أهلاً يا سائق','فعّل الاتصال علشان تستقبل طلبات الرحلات من الركاب القريبين.')}
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+          <div>
+            <div class="eyebrow">حالة الاتصال</div>
+            <div class="offer-name" id="onlineLabel">${isOnline ? 'متصل — بتستقبل طلبات' : 'غير متصل'}</div>
+            <div class="meta">لما تكون متصل، موقعك بيتحدث تلقائي كل ~5 ثواني.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="onlineToggle" ${isOnline?'checked':''} />
+            <span class="track"></span>
+          </label>
+        </div>
+        <div class="card section">
+          <div id="map" class="map"></div>
+        </div>
+        <section class="section">
+          <div class="section-head"><h2 class="section-title">طلبات الرحلات المتاحة</h2><span class="section-tag">لايف</span></div>
+          <div id="openRides" class="offers"><div class="card"><p class="sub">جاري تحميل الطلبات...</p></div></div>
+        </section>
+      </section>`;
+    }
+
+    function driverOnboarding(){
+      return `<section>
+        ${header('ملفي كسائق','لازم الأوراق تُراجع قبل ما تستقبل طلبات رسمية. في التجربة الحالية الحساب شغال فورًا.')}
+        <div class="card">
+          <div class="two">
+            <div><label class="eyebrow">الاسم بالكامل</label><input class="input" value="${esc(session.name)}" readonly/></div>
+            <div><label class="eyebrow">حالة الحساب</label><div class="input" style="display:flex;align-items:center">${esc(session.accountType==='driver'?'سائق':'—')}</div></div>
+          </div>
+          <p class="sub" style="margin-top:14px">لما تجهز باقي المميزات (رفع صور، مراجعة الإدارة)، هتظهر هنا. دلوقتي ركّز على تجربة الرحلات الحية.</p>
+        </div>
+      </section>`;
+    }
+
+    // ---------- RENDER ----------
+    function render(){
+      clearListeners();
+
+      if (!session) {
+        $('#app').innerHTML = loginScreen();
+        bindLogin();
+        return;
+      }
+
+      $('#app').innerHTML = `
+        <div class="topbar">
+          <div class="logo">Tuk<span>Go</span></div>
+          <div class="live"><i class="dot"></i>${esc(session.name)} · ${session.accountType==='driver'?'سائق':'راكب'}</div>
+        </div>
+        <main class="layout">
+          <div class="shell">
+            ${nav()}
+            <div class="main">
+              ${renderView()}
+              <div class="footer-note">TukGo Prototype · GPS حقيقي · Firebase Realtime Database</div>
+            </div>
+          </div>
+        </main>`;
+
+      $('#logoutBtn')?.addEventListener('click', signOutUser);
+      bindNav();
+      bindView();
+    }
+
+    function renderView(){
+      if (session.accountType === 'driver') {
+        if (currentView === 'onboarding') return driverOnboarding();
+        if (currentView === 'tracking') return driverTracking();
+        return driverOverview();
+      }
+      if (currentView === 'bidding') return riderBidding();
+      if (currentView === 'tracking') return riderTracking();
+      return riderOverview();
+    }
+
+    function bindNav(){
+      $$('.nav button').forEach(b => b.onclick = () => { currentView = b.dataset.view; render(); });
+    }
+
+    function bindLogin(){
+      $$('.role').forEach(b => b.onclick = () => { selectedRole = b.dataset.role; render(); });
+      $('#googleBtn').onclick = handleGoogleLogin;
+    }
+
+    // ---------- BIND VIEW ----------
+    function bindView(){
+      if (!currentLocation) {
+        startGpsWatch();
+        const iv = setInterval(() => {
+          if (currentLocation) { clearInterval(iv); render(); }
+        }, 800);
+        setTimeout(() => clearInterval(iv), 15000);
+      }
+
+      if (session.accountType === 'driver') bindDriverViews();
+      else bindRiderViews();
+    }
+
+    // ============ RIDER BIND ============
+    function bindRiderViews(){
+      if (currentView === 'overview') {
+        if (!currentLocation) {
+          const iv = setInterval(() => { if (currentLocation) { clearInterval(iv); render(); } }, 700);
+          setTimeout(() => clearInterval(iv), 15000);
+          return;
+        }
+        initMap('map', currentLocation, async (latlng) => {
+          selectedDestination = { lat: latlng.lat, lng: latlng.lng };
+          setDestinationMarker(latlng.lat, latlng.lng);
+          const el = $('#destText');
+          if (el) el.textContent = '📍 جاري تحديد العنوان...';
+          const addr = await reverseGeocode(latlng.lat, latlng.lng);
+          selectedDestination.address = addr;
+          if (el) el.textContent = addr;
+        });
+        setDestinationMarker(currentLocation.lat, currentLocation.lng);
+        if (destMarker) destMarker.setStyle({opacity:0});
+        destMarker = null;
+
+        // live drivers on map
+        addListener('drivers', 'value', (snap) => {
+          const drivers = snap.val() || {};
+          const now = Date.now();
+          const active = {};
+          Object.entries(drivers).forEach(([uid,d]) => {
+            if (d?.online && d?.location?.lat) active[uid] = d;
+          });
+          renderDriverMarkers(active);
+
+          // Nearby list
+          const list = Object.entries(active).map(([uid,d]) => {
+            const km = currentLocation ? haversineKm(currentLocation, d.location).toFixed(2) : '—';
+            return `<div class="card offer">
+              <div class="avatar">${esc((d.name||'س')[0])}</div>
+              <div class="offer-main">
+                <div class="offer-name">${esc(d.name||'سائق')}</div>
+                <div class="meta">يبعد عنك ${km} كم · متصل الآن</div>
+              </div>
+            </div>`;
+          });
+          const el = $('#nearbyDrivers');
+          if (el) el.innerHTML = list.length ? list.join('') : '<div class="card"><p class="sub">لا يوجد سواقين متصلين قريبين دلوقتي.</p></div>';
+        });
+
+        $('#publishRide').onclick = async () => {
+          if (!currentLocation) return toast('لسه بنحدد موقعك، استنى لحظة');
+          if (!selectedDestination) return toast('اضغط على الخريطة لتحديد الوجهة');
+          const price = Number($('#bidPrice').value);
+          if (!price || price < 5) return toast('اكتب سعر صحيح');
+          try {
+            const rideRef = push(ref(db, 'rides'));
+            const ride = {
+              riderId: session.uid,
+              riderName: session.name,
+              pickup: { lat: currentLocation.lat, lng: currentLocation.lng },
+              dropoff: { lat: selectedDestination.lat, lng: selectedDestination.lng },
+              pickupAddress: await reverseGeocode(currentLocation.lat, currentLocation.lng),
+              dropoffAddress: selectedDestination.address || `${selectedDestination.lat.toFixed(4)}, ${selectedDestination.lng.toFixed(4)}`,
+              suggestedPrice: price,
+              status: 'open',
+              payment: 'cash',
+              createdAt: serverTimestamp()
+            };
+            await set(rideRef, ride);
+            activeRideId = rideRef.key;
+            activeRide = { ...ride, id: rideRef.key };
+            currentView = 'bidding';
+            render();
+            toast('تم بث الطلب للسواقين');
+          } catch (e) { console.error(e); toast('تعذر إنشاء الرحلة'); }
+        };
+      }
+
+      if (currentView === 'bidding') {
+        if (!activeRideId) {
+          addListener('rides', 'value', (snap) => {
+            const rides = snap.val() || {};
+            const mine = Object.entries(rides).find(([id,r]) => r.riderId === session.uid && (r.status === 'open' || r.status === 'accepted'));
+            if (mine) {
+              activeRideId = mine[0];
+              activeRide = { ...mine[1], id: mine[0] };
+              if (activeRide.status === 'accepted') { currentView = 'tracking'; render(); }
+              else render();
+            }
+          });
+          return;
+        }
+        // listen to ride status (for acceptance)
+        addListener(`rides/${activeRideId}`, 'value', (snap) => {
+          const r = snap.val();
+          if (!r) return;
+          activeRide = { ...r, id: activeRideId };
+          if (r.status === 'accepted') {
+            currentView = 'tracking';
+            render();
+          }
+        });
+        // listen to offers
+        addListener(`rides/${activeRideId}/offers`, 'value', (snap) => {
+          const offers = snap.val() || {};
+          const list = Object.entries(offers).map(([uid, o]) => `
+            <div class="card offer">
+              <div class="avatar">${esc((o.driverName||'س')[0])}</div>
+              <div class="offer-main">
+                <div class="offer-name">${esc(o.driverName||'سائق')} <span class="badge">عرض</span></div>
+                <div class="meta">${o.distance ? o.distance.toFixed(2)+' كم · ' : ''}أرسل عرضه ${o.createdAt?'الآن':''}</div>
+              </div>
+              <div class="price">${o.price} ج</div>
+              <div class="actions"><button class="btn primary" data-accept="${uid}">موافقة</button></div>
+            </div>`);
+          const el = $('#offersList');
+          if (el) el.innerHTML = list.length ? list.join('') : '<div class="card"><p class="sub">في انتظار عروض السواقين...</p></div>';
+          $$('[data-accept]').forEach(b => b.onclick = async () => {
+            const uid = b.dataset.accept;
+            const offerSnap = await get(ref(db, `rides/${activeRideId}/offers/${uid}`));
+            const offer = offerSnap.val();
+            if (!offer) return;
+            await update(ref(db, `rides/${activeRideId}`), {
+              status: 'accepted',
+              driverId: uid,
+              driverName: offer.driverName,
+              agreedPrice: offer.price,
+              acceptedAt: serverTimestamp()
+            });
+            toast('تم قبول العرض، السائق في الطريق');
+          });
+        });
+      }
+
+      if (currentView === 'tracking') {
+        if (!activeRide) return;
+        if (!currentLocation) {
+          const iv = setInterval(() => { if (currentLocation) { clearInterval(iv); render(); } }, 700);
+          setTimeout(() => clearInterval(iv), 15000);
+          return;
+        }
+        initMap('map', currentLocation, null);
+        setDestinationMarker(activeRide.dropoff.lat, activeRide.dropoff.lng);
+        if (myMarker) myMarker.bindTooltip('أنت');
+
+        const driverId = activeRide.driverId;
+        if (driverId) {
+          addListener(`drivers/${driverId}/location`, 'value', (snap) => {
+            const loc = snap.val();
+            if (!loc) return;
+            if (!driverMarkers[driverId]) {
+              driverMarkers[driverId] = L.marker([loc.lat, loc.lng], {
+                icon: L.divIcon({ className:'', html:`<div style="width:30px;height:30px;background:#0b8f68;border:3px solid #fff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3)"></div>`, iconSize:[30,30], iconAnchor:[15,15] })
+              }).addTo(mapInstance).bindTooltip(activeRide.driverName || 'سائق');
+            } else {
+              driverMarkers[driverId].setLatLng([loc.lat, loc.lng]);
+            }
+            if (currentLocation) {
+              const km = haversineKm(currentLocation, { lat: loc.lat, lng: loc.lng });
+              const el = $('#trackDistance');
+              if (el) el.textContent = `يبعد عنك ${km.toFixed(2)} كم`;
+            }
+          });
+        }
+        addListener(`rides/${activeRide.id}`, 'value', (snap) => {
+          const r = snap.val();
+          if (!r) return;
+          activeRide = { ...r, id: activeRide.id };
+          const st = $('#trackStatus');
+          if (st) st.textContent = 'الحالة: ' + (r.status === 'accepted' ? 'السائق في الطريق' : r.status);
+          if (r.status === 'completed') {
+            toast('الرحلة انتهت');
+            setTimeout(() => { activeRide = null; activeRideId = null; currentView = 'overview'; render(); }, 1500);
+          }
+        });
+      }
+    }
+
+    // ============ DRIVER BIND ============
+    function driverTracking(){
+      return `<section>${header('رحلة نشطة','في الطريق للراكب.')}<div class="card"><div id="map" class="map"></div><div id="trackDistance" class="notice" style="margin-top:14px">جاري حساب المسافة...</div><button class="btn primary full" style="margin-top:12px" id="finishRide">إنهاء الرحلة</button></div></section>`;
+    }
+
+    function bindDriverViews(){
+      if (currentView === 'onboarding') return;
+
+      if (currentView === 'tracking') {
+        if (!activeRide) { currentView = 'overview'; render(); return; }
+        if (!currentLocation) {
+          const iv = setInterval(() => { if (currentLocation) { clearInterval(iv); render(); } }, 700);
+          setTimeout(() => clearInterval(iv), 15000);
+          return;
+        }
+        initMap('map', currentLocation, null);
+        if (myMarker) myMarker.bindTooltip('موقعك');
+        setDestinationMarker(activeRide.pickup.lat, activeRide.pickup.lng);
+        if (destMarker) destMarker.bindTooltip('موقع الراكب');
+
+        const el = $('#trackDistance');
+        const updateDist = () => {
+          if (!currentLocation) return;
+          const km = haversineKm(currentLocation, activeRide.pickup);
+          if (el) el.textContent = `تبعد عن الراكب ${km.toFixed(2)} كم`;
+        };
+        updateDist();
+        const iv = setInterval(updateDist, 4000);
+
+        $('#finishRide').onclick = async () => {
+          await update(ref(db, `rides/${activeRide.id}`), { status: 'completed', completedAt: serverTimestamp() });
+          clearInterval(iv);
+          activeRide = null; activeRideId = null;
+          toast('تم إنهاء الرحلة');
+          currentView = 'overview'; render();
+        };
+
+        addListener(`rides/${activeRide.id}`, 'value', (snap) => {
+          const r = snap.val();
+          if (!r) return;
+          if (r.status === 'completed' || r.status === 'cancelled') {
+            activeRide = null; activeRideId = null;
+            clearInterval(iv);
+            currentView = 'overview'; render();
+          }
+        });
+        return;
+      }
+
+      // overview
+      if (!currentLocation) {
+        const iv = setInterval(() => { if (currentLocation) { clearInterval(iv); render(); } }, 700);
+        setTimeout(() => clearInterval(iv), 15000);
+        return;
+      }
+      initMap('map', currentLocation, null);
+      if (myMarker) myMarker.bindTooltip('موقعك');
+
+      // if there's an accepted ride for me → go to tracking
+      addListener('rides', 'value', (snap) => {
+        const rides = snap.val() || {};
+        const mine = Object.entries(rides).find(([id,r]) => r.driverId === session.uid && r.status === 'accepted');
+        if (mine) {
+          activeRideId = mine[0];
+          activeRide = { ...mine[1], id: mine[0] };
+          currentView = 'tracking';
+          render();
+          return;
+        }
+        // open rides list
+        const open = Object.entries(rides)
+          .filter(([id,r]) => r.status === 'open' && r.riderId !== session.uid)
+          .map(([id,r]) => ({ id, ...r }))
+          .map(r => {
+            const dist = (currentLocation && r.pickup) ? haversineKm(currentLocation, r.pickup).toFixed(2) : '—';
+            const toDist = (r.pickup && r.dropoff) ? haversineKm(r.pickup, r.dropoff).toFixed(2) : '—';
+            return `<div class="card">
+              <div class="offer" style="margin-bottom:10px">
+                <div class="avatar">${esc((r.riderName||'ر')[0])}</div>
+                <div class="offer-main">
+                  <div class="offer-name">${esc(r.riderName||'راكب')} <span class="badge orange">طلب جديد</span></div>
+                  <div class="meta">منك ${dist} كم · الرحلة ${toDist} كم</div>
+                </div>
+                <div class="price">${r.suggestedPrice} ج</div>
+              </div>
+              <div class="meta" style="margin-bottom:10px"><b>من:</b> ${esc(r.pickupAddress || '—')}<br/><b>إلى:</b> ${esc(r.dropoffAddress || '—')}</div>
+              <div class="actions">
+                <input class="input" style="max-width:120px" type="number" value="${r.suggestedPrice}" min="5" id="offer_${r.id}"/>
+                <button class="btn primary" data-offer="${r.id}">إرسال عرض</button>
+              </div>
+            </div>`;
+          });
+        const el = $('#openRides');
+        if (el) el.innerHTML = open.length ? open.join('') : '<div class="card"><p class="sub">لا توجد طلبات مفتوحة دلوقتي. استنى شوية...</p></div>';
+        $$('[data-offer]').forEach(b => b.onclick = async () => {
+          const rideId = b.dataset.offer;
+          const priceInput = document.getElementById('offer_' + rideId);
+          const price = Number(priceInput.value);
+          if (!price || price < 5) return toast('اكتب سعر صحيح');
+          const dist = currentLocation ? haversineKm(currentLocation, rides[rideId].pickup) : null;
+          try {
+            await set(ref(db, `rides/${rideId}/offers/${session.uid}`), {
+              driverId: session.uid,
+              driverName: session.name,
+              price,
+              distance: dist,
+              createdAt: serverTimestamp()
+            });
+            toast('تم إرسال عرضك للراكب');
+            b.textContent = 'تم الإرسال ✓';
+            b.disabled = true;
+          } catch (e) { console.error(e); toast('تعذر إرسال العرض'); }
+        });
+      });
+
+      // online toggle
+      const toggle = $('#onlineToggle');
+      if (toggle) {
+        toggle.onchange = async () => {
+          isOnline = toggle.checked;
+          try {
+            await update(ref(db, `drivers/${session.uid}`), {
+              name: session.name,
+              online: isOnline,
+              updatedAt: serverTimestamp()
+            });
+            if (isOnline && currentLocation) {
+              await set(ref(db, `drivers/${session.uid}/location`), {
+                lat: currentLocation.lat, lng: currentLocation.lng, updatedAt: serverTimestamp()
+              });
+            }
+          } catch (e) { console.error(e); }
+          render();
+        };
+      }
+    }
+
+    // ---------- AUTH STATE ----------
+    onAuthStateChanged(auth, (user) => {
+      if (user && !session) {
+        session = { uid: user.uid, name: user.displayName || user.email || 'مستخدم', accountType: selectedRole };
+        localStorage.setItem('tukgo-session', JSON.stringify(session));
+        startGpsWatch();
+        render();
+      }
+    });
+
     render();
+    startGpsWatch();
   </script>
 </body>
 </html>
