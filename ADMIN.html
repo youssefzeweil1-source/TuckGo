@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TukGo — Admin</title>
+  <style>
+    :root{--ink:#17252b;--muted:#71807a;--green:#0b8f68;--green2:#e8f7f0;--line:#e2ebe6;--bg:#f7f9f7;--card:#fff;--orange:#b07116;--orangeBg:#fff4de;--red:#d76752;--shadow:0 16px 45px rgba(21,58,44,.08)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+    button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+    .topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:999}
+    .logo{font-weight:900;font-size:25px;letter-spacing:-1px}.logo span{color:var(--green)}
+    .live{display:flex;gap:8px;align-items:center;color:#087252;background:var(--green2);font-size:12px;font-weight:800;padding:8px 12px;border-radius:20px}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .layout{max-width:1220px;margin:auto;padding:28px 20px 60px}
+    .hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+    .eyebrow{color:var(--green);font-size:12px;font-weight:900;margin-bottom:5px}
+    .h1{font-size:32px;margin:0;font-weight:900}.sub{color:var(--muted);font-size:13px;line-height:1.8;margin:7px 0 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 3px 18px rgba(21,58,44,.025)}
+    .stat-num{font-size:25px;font-weight:900;color:var(--green)}.stat-label{font-size:11px;color:var(--muted);margin-top:5px}
+    .section{margin-top:24px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+    .section-title{font-size:19px;margin:0;font-weight:900}
+    .tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+    .tabs button{padding:10px 16px;border-radius:12px;background:#fff;border:1px solid var(--line);color:#60736b;font-weight:800;font-size:12px}
+    .tabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
+    .btn{padding:10px 14px;border-radius:11px;font-size:12px;font-weight:900;transition:.16s}
+    .btn:active{transform:scale(.97)}.btn.primary{background:var(--green);color:#fff}
+    .btn.secondary{background:#eff7f3;color:#087252}.btn.outline{border:1px solid var(--line);background:#fff;color:#60736b}
+    .btn.danger{background:#fff0ed;color:var(--red)}.btn.full{width:100%}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .offer{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.offers{display:grid;gap:10px}
+    .avatar{width:44px;height:44px;border-radius:14px;background:#ddf2e9;color:var(--green);display:grid;place-items:center;font-size:18px;font-weight:900;flex:none}
+    .offer-main{flex:1;min-width:150px}.offer-name{font-weight:900;font-size:13px}
+    .meta{color:var(--muted);font-size:10px;margin-top:5px}.price{font-size:18px;font-weight:900}
+    .badge{font-size:10px;font-weight:900;padding:6px 9px;border-radius:20px;background:#e8f7f0;color:#087252;display:inline-block}
+    .badge.orange{background:var(--orangeBg);color:var(--orange)}.badge.red{background:#fff0ed;color:var(--red)}
+    .toast{position:fixed;bottom:22px;left:22px;background:#17362b;color:#fff;padding:13px 16px;border-radius:12px;font-size:12px;box-shadow:var(--shadow);z-index:9999;max-width:90%}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 10% 10%,#dff5eb 0,transparent 34%),var(--bg)}
+    .login-card{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;padding:28px;box-shadow:var(--shadow);text-align:center}
+    .login-logo{width:68px;height:68px;background:#0b8f68;color:#fff;border-radius:22px;display:grid;place-items:center;margin:0 auto 14px;font-size:22px;font-weight:900;transform:rotate(-7deg)}
+    .muted-note{font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px}
+    .footer-note{font-size:10px;color:#9aa9a1;text-align:center;margin-top:25px}
+    .review-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+    .review-card.pending{border-right:4px solid var(--orange)}
+    .review-card.approved{border-right:4px solid var(--green)}
+    .review-card.rejected{border-right:4px solid var(--red)}
+    .receipt-preview{max-width:100%;max-height:220px;border-radius:12px;border:1px solid var(--line);display:block;margin-top:10px}
+    @media(max-width:850px){.grid{grid-template-columns:1fr}.h1{font-size:25px}}
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getDatabase, ref, update, onValue, off, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+    const firebaseConfig = { apiKey:"AIzaSyBqWgXZHVd4BXJIJ6FyOlA5DUOEMqsLruY", authDomain:"tukgo-c906b.firebaseapp.com", databaseURL:"https://tukgo-c906b-default-rtdb.europe-west1.firebasedatabase.app", projectId:"tukgo-c906b", storageBucket:"tukgo-c906b.firebasestorage.app", messagingSenderId:"789724866023", appId:"1:789724866023:web:a58bc13a0353ab19ac0942", measurementId:"G-YN6TCMFXC5" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    let session = null;
+    let currentTab = 'drivers';
+    const activeListeners = [];
+
+    const $ = (q) => document.querySelector(q);
+    const $$ = (q) => [...document.querySelectorAll(q)];
+    const esc = (x) => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+    function toast(msg, ms=2600){
+      const el = $('#toast'); el.textContent = msg; el.classList.remove('hidden');
+      clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hidden'), ms);
+    }
+    function addListener(path, cb){
+      const r = ref(db, path); onValue(r, cb); activeListeners.push({ r, cb });
+    }
+    function clearListeners(){ activeListeners.forEach(l => { try { off(l.r, l.cb); } catch {} }); activeListeners.length = 0; }
+
+    // ============ LOGIN ============
+    function loginScreen(){
+      return `<div class="login-wrap"><div class="login-card">
+        <div class="login-logo">TG</div>
+        <h1 style="margin:0;font-size:30px">Tuk<span style="color:#0b8f68">Go</span> Admin</h1>
+        <p class="sub" style="margin-bottom:20px">لوحة إدارة التطبيق</p>
+        <button id="googleBtn" class="btn primary full" style="padding:14px">تسجيل دخول بجوجل</button>
+        <p class="muted-note">لازم حسابك يكون مضاف في <b>admins</b> في قاعدة البيانات، وإلا هيتقالك مش أدمن.</p>
+      </div></div>`;
+    }
+
+    async function handleLogin(){
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const adminSnap = await get(ref(db, `admins/${user.uid}`));
+        if (!adminSnap.exists() || adminSnap.val() !== true) {
+          toast('الحساب ده مش أدمن. ضيف UID بتاعك في admins.'); await signOut(auth); return;
+        }
+        session = { uid: user.uid, name: user.displayName || user.email || 'أدمن' };
+        render();
+        toast('أهلاً ' + session.name);
+      } catch (e) {
+        console.error(e);
+        if (String(e.code).includes('unauthorized-domain')) toast('النطاق مش مضاف في Firebase');
+        else toast('فشل الدخول: ' + (e.code || e.message));
+      }
+    }
+
+    // ============ VIEWS ============
+    function header(title, sub){
+      return `<div class="hero"><div>
+        <div class="eyebrow">لوحة الإدارة</div>
+        <h1 class="h1">${title}</h1><p class="sub">${sub}</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="live"><i class="dot"></i>${esc(session.name)}</div>
+        <button class="btn outline" id="logoutBtn">خروج</button>
+      </div></div>`;
+    }
+
+    function tabsHtml(){
+      const tabs = [['drivers','مراجعة السواقين'],['subs','طلبات الاشتراك'],['rides','كل الرحلات']];
+      return `<div class="tabs">${tabs.map(([id,label]) => `<button class="${currentTab===id?'active':''}" data-tab="${id}">${label}</button>`).join('')}</div>`;
+    }
+
+    function render(){
+      clearListeners();
+      if (!session) { $('#app').innerHTML = loginScreen(); $('#googleBtn').onclick = handleLogin; return; }
+      $('#app').innerHTML = `
+        <div class="topbar"><div class="logo">Tuk<span>Go</span></div>
+          <div class="live"><i class="dot"></i>${esc(session.name)} · أدمن</div>
+        </div>
+        <main class="layout">
+          ${currentTab === 'drivers' ? header('مراجعة السواقين','وافق أو ارفض كل سائق جديد.') : ''}
+          ${currentTab === 'subs' ? header('طلبات الاشتراك','راجع الإيصالات ووافق أو ارفض.') : ''}
+          ${currentTab === 'rides' ? header('كل الرحلات','عرض لايف لجميع الرحلات.') : ''}
+          ${tabsHtml()}
+          ${renderTab()}
+          <div class="footer-note">TukGo Admin · Firebase Realtime Database</div>
+        </main>`;
+      $('#logoutBtn')?.addEventListener('click', async () => { await signOut(auth); session = null; clearListeners(); render(); });
+      $$('[data-tab]').forEach(b => b.onclick = () => { currentTab = b.dataset.tab; render(); });
+      bindTab();
+    }
+
+    function renderTab(){
+      if (currentTab === 'drivers') {
+        return `<div class="grid">
+          <div class="card"><div class="stat-num" id="pendingDriversCount">—</div><div class="stat-label">سائق بانتظار الموافقة</div></div>
+          <div class="card"><div class="stat-num" id="approvedDriversCount">—</div><div class="stat-label">سائق مفعّل</div></div>
+          <div class="card"><div class="stat-num" id="pendingSubsCount">—</div><div class="stat-label">اشتراك بانتظار المراجعة</div></div>
+        </div>
+        <section class="section"><div class="section-head"><h2 class="section-title">السواقين</h2></div>
+          <div id="driversList" class="offers"><div class="card"><p class="sub">جاري التحميل...</p></div></div>
+        </section>`;
+      }
+      if (currentTab === 'subs') {
+        return `<div id="subsList" class="offers"><div class="card"><p class="sub">جاري التحميل...</p></div></div>`;
+      }
+      return `<div id="adminRidesList" class="offers"><div class="card"><p class="sub">جاري التحميل...</p></div></div>`;
+    }
+
+    // ============ BIND ============
+    function bindTab(){
+      if (currentTab === 'drivers') bindDrivers();
+      if (currentTab === 'subs') bindSubs();
+      if (currentTab === 'rides') bindRides();
+    }
+
+    function bindDrivers(){
+      addListener('users', (snap) => {
+        const users = snap.val() || {};
+        const drivers = Object.entries(users).filter(([_,u]) => u.accountType === 'driver');
+        let pending = 0, approved = 0;
+        const list = drivers.map(([uid, u]) => {
+          const status = u.status || 'pending_documents';
+          if (status === 'pending_documents') pending++;
+          if (status === 'active') approved++;
+          const badge = status === 'pending_documents' ? '<span class="badge orange">بانتظار الموافقة</span>'
+                      : status === 'active' ? '<span class="badge">مفعّل</span>'
+                      : status === 'rejected' ? '<span class="badge red">مرفوض</span>'
+                      : '<span class="badge">'+esc(status)+'</span>';
+          const actions = status === 'pending_documents'
+            ? `<button class="btn primary" data-approve-driver="${uid}">موافقة</button>
+               <button class="btn danger" data-reject-driver="${uid}">رفض</button>`
+            : status === 'rejected'
+              ? `<button class="btn primary" data-approve-driver="${uid}">إعادة تفعيل</button>`
+              : `<button class="btn danger" data-reject-driver="${uid}">تعليق</button>`;
+          return `<div class="review-card ${status==='active'?'approved':status==='rejected'?'rejected':'pending'}">
+            <div class="offer">
+              <div class="avatar">${esc((u.name||'س')[0])}</div>
+              <div class="offer-main">
+                <div class="offer-name">${esc(u.name||'سائق')} ${badge}</div>
+                <div class="meta">UID: ${esc(uid.slice(0,12))}...</div>
+                <div class="meta">${u.createdAt ? 'سجل: ' + new Date(u.createdAt).toLocaleString('ar-EG') : ''}</div>
+              </div>
+              <div class="actions">${actions}</div>
+            </div>
+          </div>`;
+        });
+        const el = $('#driversList');
+        if (el) el.innerHTML = list.length ? list.join('') : '<div class="card"><p class="sub">لا يوجد سواقين مسجلين.</p></div>';
+        const p = $('#pendingDriversCount'); if (p) p.textContent = pending;
+        const a = $('#approvedDriversCount'); if (a) a.textContent = approved;
+
+        $$('[data-approve-driver]').forEach(b => b.onclick = async () => {
+          await update(ref(db, `users/${b.dataset.approveDriver}`), { status: 'active', approvedAt: serverTimestamp() });
+          toast('تم تفعيل السائق');
+        });
+        $$('[data-reject-driver]').forEach(b => b.onclick = async () => {
+          const reason = prompt('سبب الرفض (اختياري):') || '';
+          await update(ref(db, `users/${b.dataset.rejectDriver}`), { status: 'rejected', rejectReason: reason, rejectedAt: serverTimestamp() });
+          toast('تم رفض السائق');
+        });
+      });
+
+      addListener('subscriptions', (snap) => {
+        const subs = snap.val() || {};
+        let pending = 0;
+        Object.values(subs).forEach(s => { if (s.status === 'pending') pending++; });
+        const el = $('#pendingSubsCount'); if (el) el.textContent = pending;
+      });
+    }
+
+    function bindSubs(){
+      const PLANS = { weekly:{title:'أسبوعي'}, monthly:{title:'شهري'}, yearly:{title:'سنوي ترويجي'} };
+      addListener('subscriptions', (snap) => {
+        const subs = snap.val() || {};
+        const list = Object.entries(subs).sort((a,b) => (b[1].submittedAt||0)-(a[1].submittedAt||0)).map(([uid, s]) => {
+          const plan = PLANS[s.plan];
+          const badge = s.status === 'pending' ? '<span class="badge orange">بانتظار المراجعة</span>'
+                      : s.status === 'approved' ? '<span class="badge">مفعّل</span>'
+                      : '<span class="badge red">مرفوض</span>';
+          const actions = s.status === 'pending'
+            ? `<button class="btn primary" data-approve-sub="${uid}">تفعيل</button>
+               <button class="btn danger" data-reject-sub="${uid}">رفض</button>`
+            : s.status === 'approved'
+              ? `<button class="btn danger" data-reject-sub="${uid}">إلغاء التفعيل</button>`
+              : `<button class="btn primary" data-approve-sub="${uid}">تفعيل</button>`;
+          return `<div class="review-card ${s.status==='approved'?'approved':s.status==='rejected'?'rejected':'pending'}">
+            <div class="offer" style="margin-bottom:10px">
+              <div class="avatar">${esc((s.name||'س')[0])}</div>
+              <div class="offer-main">
+                <div class="offer-name">${esc(s.name||'سائق')} ${badge}</div>
+                <div class="meta">الباقة: <b>${esc(plan?.title || s.plan)}</b> · المبلغ: ${s.amount} ج</div>
+                ${s.transactionId ? `<div class="meta">رقم العملية: ${esc(s.transactionId)}</div>` : ''}
+                ${s.submittedAt ? `<div class="meta">أُرسل: ${new Date(s.submittedAt).toLocaleString('ar-EG')}</div>` : ''}
+              </div>
+              <div class="actions">${actions}</div>
+            </div>
+            ${s.receiptUrl ? `<a href="${esc(s.receiptUrl)}" target="_blank" rel="noopener"><img src="${esc(s.receiptUrl)}" class="receipt-preview" alt="إيصال"/></a>` : ''}
+          </div>`;
+        });
+        const el = $('#subsList');
+        if (el) el.innerHTML = list.length ? list.join('') : '<div class="card"><p class="sub">لا توجد طلبات اشتراك.</p></div>';
+
+        $$('[data-approve-sub]').forEach(b => b.onclick = async () => {
+          const uid = b.dataset.approveSub;
+          await update(ref(db, `subscriptions/${uid}`), { status: 'approved', reviewedAt: serverTimestamp() });
+          await update(ref(db, `users/${uid}`), { status: 'active', updatedAt: serverTimestamp() });
+          toast('تم تفعيل الاشتراك');
+        });
+        $$('[data-reject-sub]').forEach(b => b.onclick = async () => {
+          const uid = b.dataset.rejectSub;
+          const reason = prompt('سبب الرفض:') || '';
+          await update(ref(db, `subscriptions/${uid}`), { status: 'rejected', reason, reviewedAt: serverTimestamp() });
+          toast('تم رفض الطلب');
+        });
+      });
+    }
+
+    function bindRides(){
+      addListener('rides', (snap) => {
+        const rides = snap.val() || {};
+        const list = Object.entries(rides).sort((a,b) => (b[1].createdAt||0)-(a[1].createdAt||0)).slice(0, 50).map(([id, r]) => {
+          const badge = r.status === 'open' ? '<span class="badge orange">مفتوحة</span>'
+                      : r.status === 'accepted' ? '<span class="badge">جارية</span>'
+                      : r.status === 'completed' ? '<span class="badge">مكتملة</span>'
+                      : '<span class="badge red">'+esc(r.status)+'</span>';
+          const offers = r.offers ? Object.keys(r.offers).length : 0;
+          return `<div class="review-card">
+            <div class="offer">
+              <div class="avatar">${esc((r.riderName||'ر')[0])}</div>
+              <div class="offer-main">
+                <div class="offer-name">${esc(r.riderName||'راكب')} ${badge}</div>
+                <div class="meta">${esc(r.pickupAddress||'—')} → ${esc(r.dropoffAddress||'—')}</div>
+                <div class="meta">السعر: ${r.suggestedPrice} ج · عروض: ${offers} · ${r.driverName?'السائق: '+esc(r.driverName):'بدون سائق'}</div>
+                ${r.createdAt ? `<div class="meta">${new Date(r.createdAt).toLocaleString('ar-EG')}</div>` : ''}
+              </div>
+            </div>
+          </div>`;
+        });
+        const el = $('#adminRidesList');
+        if (el) el.innerHTML = list.length ? list.join('') : '<div class="card"><p class="sub">لا توجد رحلات.</p></div>';
+      });
+    }
+
+    // ============ AUTH ============
+    onAuthStateChanged(auth, async (user) => {
+      if (user && !session) {
+        const adminSnap = await get(ref(db, `admins/${user.uid}`));
+        if (adminSnap.exists() && adminSnap.val() === true) {
+          session = { uid: user.uid, name: user.displayName || user.email || 'أدمن' };
+          render();
+        } else {
+          toast('الحساب ده مش أدمن');
+        }
+      }
+      if (!user) { session = null; render(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>
